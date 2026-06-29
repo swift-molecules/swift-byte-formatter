@@ -1,0 +1,11 @@
+# .github/metadata.yaml
+description: "Byte data formatters for Swift — human-readable byte sizes (\"1.5 KiB\") via a dependency-inversion seam whose SI/IEC prefix ladders are injected from a higher layer, plus fixed-width hexadecimal rendering of a single byte (\"ff\"). Foundation-free."
+topics:
+  - primitives
+  - byte
+  - formatter
+  - byte-size
+  - hexadecimal
+homepage: "https://swift-institute.org"
+readme:
+  family: E
