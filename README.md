@@ -10,7 +10,7 @@ Text rendering of byte data for Swift — human-readable byte **sizes** (`"1.5 K
 
 ### Byte sizes
 
-`Byte.Size.Format` renders a count of bytes as a human-readable storage magnitude. It is the generic half of a **dependency-inversion seam**: the algorithm lives here at Layer 1, but the prefix ladder it renders against — the SI (base-1000) or IEC (base-1024) one — is *injected* by the caller as a `Byte.Size.Scale`. This package has no knowledge of SI, IEC, or the ISO/IEC 80000 prefixes; it is pure tiers.
+`Byte.Size.Formatter` renders a count of bytes as a human-readable storage magnitude. It is the generic half of a **dependency-inversion seam**: the algorithm lives here at Layer 1, but the prefix ladder it renders against — the SI (base-1000) or IEC (base-1024) one — is *injected* by the caller as a `Byte.Size.Scale`. This package has no knowledge of SI, IEC, or the ISO/IEC 80000 prefixes; it is pure tiers.
 
 ```swift
 import Byte_Formatter_Primitives
@@ -25,25 +25,27 @@ let iec = Byte.Size.Scale(
     ]
 )
 
-1536.formatted(Byte.Size.Format(scale: iec))                    // "1.5 KiB"
-(3 * 1024 * 1024).formatted(Byte.Size.Format(scale: iec))       // "3.0 MiB"
-512.formatted(Byte.Size.Format(scale: iec))                     // "512.0 B"
-1536.formatted(Byte.Size.Format(scale: iec, precision: 2))      // "1.50 KiB"
+1536.formatted(Byte.Size.Formatter(scale: iec))                    // "1.5 KiB"
+(3 * 1024 * 1024).formatted(Byte.Size.Formatter(scale: iec))       // "3.0 MiB"
+512.formatted(Byte.Size.Formatter(scale: iec))                     // "512.0 B"
+1536.formatted(Byte.Size.Formatter(scale: iec, precision: 2))      // "1.50 KiB"
 ```
 
 The largest tier whose `base^exponent` does not exceed the count is selected, then the mantissa is rendered with `precision` fractional digits and the tier's unit. The mantissa is produced by **integer math only** — no floating point, no `Foundation`, no `String(format:)`. Tier selection is overflow-safe: factors for tiers above the chosen one (which overflow fixed-width integers) are never computed.
 
 A `Byte.Size.Scale` carries a `base`, a `unitSymbol` (for example `"B"`), and an ascending ladder of `(exponent, symbol)` tiers — the *prefix* per tier (`"Ki"`), rendered ahead of the unit symbol to spell `"KiB"`. Storing the exponent rather than the expanded factor is what keeps tebibytes and beyond from overflowing.
 
+> The leading-dot call site `count.formatted(.bytes(.binary))` is supplied by the SI/IEC binding (`swift-iec-80000-13`), which injects the concrete prefix ladders this package's seam ranges over.
+
 ### Byte hex
 
-`Byte.Format` renders a single `Byte` as fixed-width text in a `Radix`, hexadecimal by default. The digit alphabet comes from `swift-radix-primitives`.
+`Byte.Formatter` renders a single `Byte` as fixed-width text in a `Radix`, hexadecimal by default. The digit alphabet comes from `swift-radix-primitives`.
 
 ```swift
 let byte: Byte = 0xFF
-byte.formatted(.hexadecimal)                       // "ff"
-Byte(0x0A).formatted(.hexadecimal)                 // "0a"
-Byte(255).formatted(Byte.Format(radix: .decimal))  // "255"
+byte.formatted(.hexadecimal)                          // "ff"
+Byte(0x0A).formatted(.hexadecimal)                    // "0a"
+Byte(255).formatted(Byte.Formatter(radix: .decimal))  // "255"
 ```
 
 Output is fixed-width: two glyphs for hexadecimal, three for decimal, eight for binary, leading zeros included.
@@ -75,16 +77,15 @@ Requires Swift 6.3.1 and macOS 26 / iOS 26 / tvOS 26 / watchOS 26 / visionOS 26 
 
 ## Architecture
 
-The umbrella `Byte Formatter Primitives` re-exports both modules below; import a sub-target directly when you want only one concern.
+`import Byte_Formatter_Primitives` surfaces the whole package — `Byte.Formatter` directly, and `Byte.Size.Formatter` re-exported from the lean size module. A size-only consumer that wants to stay free of the radix engine imports `Byte Size Formatter Primitives` directly instead.
 
-| Product | Target | Purpose |
-|---------|--------|---------|
-| `Byte Formatter Primitives` | `Sources/Byte Formatter Primitives/` | Umbrella that re-exports the modules below. |
-| `Byte Size Format Primitives` | `Sources/Byte Size Format Primitives/` | `Byte.Size.Scale` + `Byte.Size.Format` — the byte-size dependency-inversion seam, plus the `.formatted(_:)` entry point on `BinaryInteger`. Depends only on `Byte` and `Formatter.Protocol` — no radix engine. |
-| `Byte Format Primitives` | `Sources/Byte Format Primitives/` | `Byte.Format` — fixed-width radix (hex) rendering of a `Byte`, plus its `.formatted(_:)` entry point. |
-| `Byte Formatter Primitives Test Support` | `Tests/Support/` | Re-exports the umbrella for test consumers. |
+| Product | Target | When to import |
+|---------|--------|----------------|
+| `Byte Formatter Primitives` | `Sources/Byte Formatter Primitives/` | The default. `Byte.Formatter` — fixed-width radix (hex) rendering of a `Byte` — plus its `.formatted(_:)` entry point; re-exports the byte-size module below. |
+| `Byte Size Formatter Primitives` | `Sources/Byte Size Formatter Primitives/` | `Byte.Size.Scale` + `Byte.Size.Formatter` — the byte-size dependency-inversion seam, plus the `.formatted(_:)` entry point on `BinaryInteger`. Depends only on `Byte` and `Formatter.Protocol` — **no radix engine**. Import this directly when you need byte sizes without pulling in radix. |
+| `Byte Formatter Primitives Test Support` | `Tests/Support/` | Re-exports the package for test consumers. |
 
-Built on `Byte Primitive` (for `Byte`), `Radix Primitive` (for the hex digit alphabet), and `Formatter Primitives` (for the `Formatter.Protocol` capability). The size seam deliberately does **not** depend on the radix engine. Foundation-free.
+Built on `Byte Primitive` / `Byte Primitives` (for `Byte`), `Radix Primitive` (for the hex digit alphabet), and `Formatter Primitives` (for the `Formatter.Protocol` capability). The size seam deliberately does **not** depend on the radix engine. Foundation-free.
 
 ---
 

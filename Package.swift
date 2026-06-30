@@ -12,17 +12,13 @@ let package = Package(
         .visionOS(.v26),
     ],
     products: [
-        // MARK: - Sub-namespaces
+        // MARK: - Sub-namespace (lean, radix-free entry point)
         .library(
-            name: "Byte Size Format Primitives",
-            targets: ["Byte Size Format Primitives"]
-        ),
-        .library(
-            name: "Byte Format Primitives",
-            targets: ["Byte Format Primitives"]
+            name: "Byte Size Formatter Primitives",
+            targets: ["Byte Size Formatter Primitives"]
         ),
 
-        // MARK: - Umbrella
+        // MARK: - Primary entry point (Byte.Formatter — hex; re-exports byte-size)
         .library(
             name: "Byte Formatter Primitives",
             targets: ["Byte Formatter Primitives"]
@@ -42,40 +38,35 @@ let package = Package(
     targets: [
         // MARK: - Sub-namespace: byte-size formatting (the dependency-inversion seam)
         //
-        // `Byte.Size.Scale` + `Byte.Size.Format` — the generic byte-size
+        // `Byte.Size.Scale` + `Byte.Size.Formatter` — the generic byte-size
         // rendering algorithm and its injected prefix-ladder witness. Carries
         // NO SI/IEC knowledge; the concrete decimal/binary ladders are injected
         // from L2. Depends only on `Byte` (for the namespace) and the
-        // `Formatter.Protocol` capability — never on a radix engine.
+        // `Formatter.Protocol` capability — never on a radix engine, so a
+        // size-only consumer (e.g. swift-iec-80000-13) stays radix-free.
         .target(
-            name: "Byte Size Format Primitives",
+            name: "Byte Size Formatter Primitives",
             dependencies: [
                 .product(name: "Byte Primitive", package: "swift-byte-primitives"),
                 .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
             ]
         ),
 
-        // MARK: - Sub-namespace: byte hex formatting
+        // MARK: - Primary: byte hex formatting (Byte.Formatter) + package entry point
         //
-        // `Byte.Format` — renders a single `Byte` as fixed-width text in a given
-        // `Radix` (default hexadecimal, e.g. "ff"), using the radix's digit
-        // alphabet. Depends on `Byte`, `Radix`, and the `Formatter.Protocol`
-        // capability.
-        .target(
-            name: "Byte Format Primitives",
-            dependencies: [
-                .product(name: "Byte Primitives", package: "swift-byte-primitives"),
-                .product(name: "Radix Primitive", package: "swift-radix-primitives"),
-                .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
-            ]
-        ),
-
-        // MARK: - Umbrella
+        // `Byte.Formatter` — renders a single `Byte` as fixed-width text in a
+        // given `Radix` (default hexadecimal, e.g. "ff"), using the radix's
+        // digit alphabet. The repo-name-matching module: hosts the package's
+        // DocC catalog and `@_exported`-re-exports `Byte Size Formatter
+        // Primitives`, so `import Byte_Formatter_Primitives` surfaces the whole
+        // package.
         .target(
             name: "Byte Formatter Primitives",
             dependencies: [
-                "Byte Size Format Primitives",
-                "Byte Format Primitives",
+                "Byte Size Formatter Primitives",
+                .product(name: "Byte Primitives", package: "swift-byte-primitives"),
+                .product(name: "Radix Primitive", package: "swift-radix-primitives"),
+                .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
             ]
         ),
 
