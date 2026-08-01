@@ -7,6 +7,10 @@ import Testing
 @Suite
 struct `Byte.Formatter - Hexadecimal` {
 
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+
     @Test
     func `All-ones byte renders ff`() {
         let byte: Byte = 0xFF
@@ -30,7 +34,7 @@ struct `Byte.Formatter - Hexadecimal` {
 
     @Test
     func `Hex output is always two glyphs`() {
-        for raw in UInt8.min...UInt8.max {
+        (UInt8.min...UInt8.max).forEach { raw in
             #expect(Byte(raw).formatted(.hexadecimal).count == 2)
         }
     }
@@ -40,6 +44,10 @@ struct `Byte.Formatter - Hexadecimal` {
 
 @Suite
 struct `Byte.Formatter - Other radixes` {
+
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `Decimal renders three fixed-width glyphs`() {
@@ -59,6 +67,10 @@ struct `Byte.Formatter - Other radixes` {
 
 @Suite
 struct `Byte.Formatter - Formatter.Protocol conformance` {
+
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `format() method renders directly`() {

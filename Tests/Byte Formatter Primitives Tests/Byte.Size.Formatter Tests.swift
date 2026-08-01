@@ -30,6 +30,10 @@ private let iec = Byte.Size.Scale(
 @Suite
 struct `Byte.Size.Formatter - Decimal` {
 
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+
     @Test
     func `Renders kilobytes with one fractional digit`() {
         #expect(1500.formatted(Byte.Size.Formatter(scale: decimal)) == "1.5 kB")
@@ -61,6 +65,10 @@ struct `Byte.Size.Formatter - Decimal` {
 @Suite
 struct `Byte.Size.Formatter - IEC` {
 
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+
     @Test
     func `Renders kibibytes`() {
         #expect(1536.formatted(Byte.Size.Formatter(scale: iec)) == "1.5 KiB")
@@ -87,6 +95,10 @@ struct `Byte.Size.Formatter - IEC` {
 @Suite
 struct `Byte.Size.Formatter - Precision` {
 
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+
     @Test
     func `Precision zero drops the fraction`() {
         #expect(1536.formatted(Byte.Size.Formatter(scale: iec, precision: 0)) == "1 KiB")
@@ -109,6 +121,10 @@ struct `Byte.Size.Formatter - Precision` {
 @Suite
 struct `Byte.Size.Formatter - Separator` {
 
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+
     @Test
     func `Empty separator joins mantissa and unit`() {
         #expect(1536.formatted(Byte.Size.Formatter(scale: iec, separator: "")) == "1.5KiB")
@@ -119,6 +135,10 @@ struct `Byte.Size.Formatter - Separator` {
 
 @Suite
 struct `Byte.Size.Formatter - Sign and types` {
+
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `Negative counts render with a leading minus`() {
@@ -147,6 +167,10 @@ struct `Byte.Size.Formatter - Sign and types` {
 
 @Suite
 struct `Byte.Size.Formatter - Formatter.Protocol conformance` {
+
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
 
     @Test
     func `format() method renders directly`() {
