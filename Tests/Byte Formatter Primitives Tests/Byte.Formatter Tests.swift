@@ -2,8 +2,6 @@ import Testing
 
 @testable import Byte_Formatter_Primitives
 
-// MARK: - Byte.Formatter — Hexadecimal
-
 @Suite
 struct `Byte.Formatter - Hexadecimal` {
 
@@ -40,8 +38,6 @@ struct `Byte.Formatter - Hexadecimal` {
     }
 }
 
-// MARK: - Byte.Formatter — Other radixes
-
 @Suite
 struct `Byte.Formatter - Other radixes` {
 
@@ -62,8 +58,6 @@ struct `Byte.Formatter - Other radixes` {
         #expect(Byte(1).formatted(Byte.Formatter(radix: .binary)) == "00000001")
     }
 }
-
-// MARK: - Byte.Formatter — Formatter.Protocol conformance
 
 @Suite
 struct `Byte.Formatter - Formatter.Protocol conformance` {

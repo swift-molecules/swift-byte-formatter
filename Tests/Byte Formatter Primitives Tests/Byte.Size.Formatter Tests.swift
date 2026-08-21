@@ -2,9 +2,6 @@ import Testing
 
 @testable import Byte_Formatter_Primitives
 
-// Test ladders. These stand in for the SI/IEC ladders an L2 binding would
-// inject — this package itself carries no SI/IEC knowledge.
-
 private let decimal = Byte.Size.Scale(
     base: 1000,
     unitSymbol: "B",
@@ -24,8 +21,6 @@ private let iec = Byte.Size.Scale(
         .init(exponent: 3, symbol: "Gi"),
     ]
 )
-
-// MARK: - Byte.Size.Formatter — Decimal (base 1000)
 
 @Suite
 struct `Byte.Size.Formatter - Decimal` {
@@ -60,8 +55,6 @@ struct `Byte.Size.Formatter - Decimal` {
     }
 }
 
-// MARK: - Byte.Size.Formatter — IEC (base 1024)
-
 @Suite
 struct `Byte.Size.Formatter - IEC` {
 
@@ -90,8 +83,6 @@ struct `Byte.Size.Formatter - IEC` {
     }
 }
 
-// MARK: - Byte.Size.Formatter — Precision
-
 @Suite
 struct `Byte.Size.Formatter - Precision` {
 
@@ -111,12 +102,10 @@ struct `Byte.Size.Formatter - Precision` {
 
     @Test
     func `Fractional digits truncate toward zero`() {
-        // 1900 / 1024 = 1.85546875 → truncated to one digit is "1.8".
+
         #expect(1900.formatted(Byte.Size.Formatter(scale: iec, precision: 1)) == "1.8 KiB")
     }
 }
-
-// MARK: - Byte.Size.Formatter — Separator
 
 @Suite
 struct `Byte.Size.Formatter - Separator` {
@@ -130,8 +119,6 @@ struct `Byte.Size.Formatter - Separator` {
         #expect(1536.formatted(Byte.Size.Formatter(scale: iec, separator: "")) == "1.5KiB")
     }
 }
-
-// MARK: - Byte.Size.Formatter — Sign and integer types
 
 @Suite
 struct `Byte.Size.Formatter - Sign and types` {
@@ -153,7 +140,7 @@ struct `Byte.Size.Formatter - Sign and types` {
 
     @Test
     func `Values above the top tier stay on the top tier`() {
-        // Only a "k" tier reaches; 5_000_000 has no higher rung here.
+
         let kOnly = Byte.Size.Scale(
             base: 1000,
             unitSymbol: "B",
@@ -162,8 +149,6 @@ struct `Byte.Size.Formatter - Sign and types` {
         #expect(5_000_000.formatted(Byte.Size.Formatter(scale: kOnly)) == "5000.0 kB")
     }
 }
-
-// MARK: - Byte.Size.Formatter — Formatter.Protocol conformance
 
 @Suite
 struct `Byte.Size.Formatter - Formatter.Protocol conformance` {
