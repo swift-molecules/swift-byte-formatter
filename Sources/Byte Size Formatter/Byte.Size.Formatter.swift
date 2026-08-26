@@ -1,8 +1,8 @@
-public import Formatter_Primitives
+public import Formatter
 
 extension Byte.Size {
 
-    public struct Formatter<Count>: Sendable, Formatter_Primitives.Formatter.`Protocol`
+    public struct Formatter<Count>: Sendable, Formatter.Formatter.`Protocol`
     where Count: BinaryInteger {
 
         @usableFromInline

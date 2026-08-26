@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Byte_Formatter_Primitives
+@testable import Byte_Formatter
 
 @Suite
 struct `Byte.Formatter - Hexadecimal` {

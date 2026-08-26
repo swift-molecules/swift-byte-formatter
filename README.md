@@ -1,4 +1,4 @@
-# Byte Formatter Primitives
+# Byte Formatter
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -13,7 +13,7 @@ Text rendering of byte data for Swift — human-readable byte **sizes** (`"1.5 K
 `Byte.Size.Formatter` renders a count of bytes as a human-readable storage magnitude. It is the generic half of a **dependency-inversion seam**: the algorithm lives here at Layer 1, but the prefix ladder it renders against — the SI (base-1000) or IEC (base-1024) one — is *injected* by the caller as a `Byte.Size.Scale`. This package has no knowledge of SI, IEC, or the ISO/IEC 80000 prefixes; it is pure tiers.
 
 ```swift
-import Byte_Formatter_Primitives
+import Byte_Formatter
 
 let iec = Byte.Size.Scale(
     base: 1024,
@@ -39,7 +39,7 @@ A `Byte.Size.Scale` carries a `base`, a `unitSymbol` (for example `"B"`), and an
 
 ### Byte hex
 
-`Byte.Formatter` renders a single `Byte` as fixed-width text in a `Radix`, hexadecimal by default. The digit alphabet comes from `swift-radix-primitives`.
+`Byte.Formatter` renders a single `Byte` as fixed-width text in a `Radix`, hexadecimal by default. The digit alphabet comes from `swift-radix`.
 
 ```swift
 let byte: Byte = 0xFF
@@ -58,7 +58,7 @@ Both formatters conform to the same `Formatter.Protocol` as every other style in
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-primitives/swift-byte-formatter-primitives.git", branch: "main")
+    .package(url: "https://github.com/swift-molecules/swift-byte-formatter.git", branch: "main")
 ]
 ```
 
@@ -66,7 +66,7 @@ dependencies: [
 .target(
     name: "App",
     dependencies: [
-        .product(name: "Byte Formatter Primitives", package: "swift-byte-formatter-primitives"),
+        .product(name: "Byte Formatter", package: "swift-byte-formatter"),
     ]
 )
 ```
@@ -77,15 +77,15 @@ Requires Swift 6.3.1 and macOS 26 / iOS 26 / tvOS 26 / watchOS 26 / visionOS 26 
 
 ## Architecture
 
-`import Byte_Formatter_Primitives` surfaces the whole package — `Byte.Formatter` directly, and `Byte.Size.Formatter` re-exported from the lean size module. A size-only consumer that wants to stay free of the radix engine imports `Byte Size Formatter Primitives` directly instead.
+`import Byte_Formatter` surfaces the whole package — `Byte.Formatter` directly, and `Byte.Size.Formatter` re-exported from the lean size module. A size-only consumer that wants to stay free of the radix engine imports `Byte Size Formatter` directly instead.
 
 | Product | Target | When to import |
 |---------|--------|----------------|
-| `Byte Formatter Primitives` | `Sources/Byte Formatter Primitives/` | The default. `Byte.Formatter` — fixed-width radix (hex) rendering of a `Byte` — plus its `.formatted(_:)` entry point; re-exports the byte-size module below. |
-| `Byte Size Formatter Primitives` | `Sources/Byte Size Formatter Primitives/` | `Byte.Size.Scale` + `Byte.Size.Formatter` — the byte-size dependency-inversion seam, plus the `.formatted(_:)` entry point on `BinaryInteger`. Depends only on `Byte` and `Formatter.Protocol` — **no radix engine**. Import this directly when you need byte sizes without pulling in radix. |
-| `Byte Formatter Primitives Test Support` | `Tests/Support/` | Re-exports the package for test consumers. |
+| `Byte Formatter` | `Sources/Byte Formatter/` | The default. `Byte.Formatter` — fixed-width radix (hex) rendering of a `Byte` — plus its `.formatted(_:)` entry point; re-exports the byte-size module below. |
+| `Byte Size Formatter` | `Sources/Byte Size Formatter/` | `Byte.Size.Scale` + `Byte.Size.Formatter` — the byte-size dependency-inversion seam, plus the `.formatted(_:)` entry point on `BinaryInteger`. Depends only on `Byte` and `Formatter.Protocol` — **no radix engine**. Import this directly when you need byte sizes without pulling in radix. |
+| `Byte Formatter Test Support` | `Tests/Support/` | Re-exports the package for test consumers. |
 
-Built on `Byte Primitive` / `Byte Primitives` (for `Byte`), `Radix Primitive` (for the hex digit alphabet), and `Formatter Primitives` (for the `Formatter.Protocol` capability). The size seam deliberately does **not** depend on the radix engine. Foundation-free.
+Built on `Byte Primitive` / `Byte` (for `Byte`), `Radix Primitive` (for the hex digit alphabet), and `Formatter` (for the `Formatter.Protocol` capability). The size seam deliberately does **not** depend on the radix engine. Foundation-free.
 
 ---
 

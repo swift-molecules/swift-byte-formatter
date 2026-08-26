@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-byte-formatter-primitives",
+    name: "swift-byte-formatter",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -14,69 +14,69 @@ let package = Package(
     products: [
 
         .library(
-            name: "Byte Size Formatter Primitives",
-            targets: ["Byte Size Formatter Primitives"]
+            name: "Byte Size Formatter",
+            targets: ["Byte Size Formatter"]
         ),
 
         .library(
-            name: "Byte Formatter Primitives",
-            targets: ["Byte Formatter Primitives"]
+            name: "Byte Formatter",
+            targets: ["Byte Formatter"]
         ),
 
         .library(
-            name: "Byte Formatter Primitives Test Support",
-            targets: ["Byte Formatter Primitives Test Support"]
+            name: "Byte Formatter Test Support",
+            targets: ["Byte Formatter Test Support"]
         ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-byte-primitives.git",
+            url: "https://github.com/swift-molecules/swift-byte.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-radix-primitives.git",
+            url: "https://github.com/swift-molecules/swift-radix.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-formatter-primitives.git",
+            url: "https://github.com/swift-molecules/swift-formatter.git",
             branch: "main"
         ),
     ],
     targets: [
 
         .target(
-            name: "Byte Size Formatter Primitives",
+            name: "Byte Size Formatter",
             dependencies: [
-                .product(name: "Byte Primitive", package: "swift-byte-primitives"),
-                .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
+                .product(name: "Byte Primitive", package: "swift-byte"),
+                .product(name: "Formatter", package: "swift-formatter"),
             ]
         ),
 
         .target(
-            name: "Byte Formatter Primitives",
+            name: "Byte Formatter",
             dependencies: [
-                "Byte Size Formatter Primitives",
-                .product(name: "Byte Primitives", package: "swift-byte-primitives"),
-                .product(name: "Radix Primitive", package: "swift-radix-primitives"),
-                .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
+                "Byte Size Formatter",
+                .product(name: "Byte", package: "swift-byte"),
+                .product(name: "Radix Primitive", package: "swift-radix"),
+                .product(name: "Formatter", package: "swift-formatter"),
             ]
         ),
 
         .target(
-            name: "Byte Formatter Primitives Test Support",
+            name: "Byte Formatter Test Support",
             dependencies: [
-                "Byte Formatter Primitives"
+                "Byte Formatter"
             ],
             path: "Tests/Support"
         ),
 
         .testTarget(
-            name: "Byte Formatter Primitives Tests",
+            name: "Byte Formatter Tests",
             dependencies: [
-                "Byte Formatter Primitives",
-                "Byte Formatter Primitives Test Support",
+                "Byte Formatter",
+                "Byte Formatter Test Support",
             ],
-            path: "Tests/Byte Formatter Primitives Tests"
+            path: "Tests/Byte Formatter Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
