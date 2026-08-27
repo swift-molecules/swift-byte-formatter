@@ -1,10 +1,10 @@
 public import Byte
 public import Formatter
-public import Radix_Primitive
+public import Radix
 
 extension Byte {
 
-    public struct Formatter: Sendable, Formatter.Formatter.`Protocol` {
+    public struct Formatter: Sendable, Formatter::Formatter.`Protocol` {
 
         @usableFromInline
         let radix: Radix

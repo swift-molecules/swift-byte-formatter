@@ -10,7 +10,7 @@ extension Byte {
 
     @inlinable
     public func formatted<F>(_ format: F) -> F.Output
-    where F: Formatter.Formatter.`Protocol`, F.Input == Self, F.Failure == Never {
+    where F: Formatter::Formatter.`Protocol`, F.Input == Self, F.Failure == Never {
         format.format(self)
     }
 }

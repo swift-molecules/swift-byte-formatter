@@ -30,15 +30,15 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-molecules/swift-byte.git",
+            url: "https://github.com/swift-atoms/swift-byte.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-radix.git",
+            url: "https://github.com/swift-atoms/swift-radix.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-formatter.git",
+            url: "https://github.com/swift-atoms/swift-formatter.git",
             branch: "main"
         ),
     ],
@@ -47,7 +47,7 @@ let package = Package(
         .target(
             name: "Byte Size Formatter",
             dependencies: [
-                .product(name: "Byte Primitive", package: "swift-byte"),
+                .product(name: "Byte", package: "swift-byte"),
                 .product(name: "Formatter", package: "swift-formatter"),
             ]
         ),
@@ -57,7 +57,7 @@ let package = Package(
             dependencies: [
                 "Byte Size Formatter",
                 .product(name: "Byte", package: "swift-byte"),
-                .product(name: "Radix Primitive", package: "swift-radix"),
+                .product(name: "Radix", package: "swift-radix"),
                 .product(name: "Formatter", package: "swift-formatter"),
             ]
         ),
